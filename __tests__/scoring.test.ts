@@ -1,38 +1,58 @@
 import { describe, it, expect } from 'vitest';
+import { computeScore, inactivityPenalty } from '@/lib/scoring';
 
-// Placeholder for the scoring logic that will be built in Iteration 1.
-// score = messages*1 + reactions*2 + replies*3 - inactivity_penalty
-function computeScore({
-  messages,
-  reactions,
-  replies,
-  inactivityPenalty,
-}: {
-  messages: number;
-  reactions: number;
-  replies: number;
-  inactivityPenalty: number;
-}) {
-  return messages * 1 + reactions * 2 + replies * 3 - inactivityPenalty;
-}
+describe('inactivityPenalty', () => {
+  it('is 0 within the 7-day grace window', () => {
+    expect(inactivityPenalty(0)).toBe(0);
+    expect(inactivityPenalty(7)).toBe(0);
+  });
+
+  it('grows by 1 per day after grace', () => {
+    expect(inactivityPenalty(8)).toBe(1);
+    expect(inactivityPenalty(14)).toBe(7);
+    expect(inactivityPenalty(30)).toBe(23);
+  });
+});
 
 describe('computeScore', () => {
-  it('returns 0 for no activity', () => {
+  it('is 0 with no activity', () => {
     expect(
-      computeScore({ messages: 0, reactions: 0, replies: 0, inactivityPenalty: 0 }),
+      computeScore({ messages: 0, reactions: 0, replies: 0, daysSinceLastActive: 0 }),
     ).toBe(0);
   });
 
-  it('weights reactions and replies higher than messages', () => {
-    const msgOnly = computeScore({ messages: 3, reactions: 0, replies: 0, inactivityPenalty: 0 });
-    const reactionOnly = computeScore({ messages: 0, reactions: 3, replies: 0, inactivityPenalty: 0 });
-    const replyOnly = computeScore({ messages: 0, reactions: 0, replies: 3, inactivityPenalty: 0 });
-    expect(reactionOnly).toBeGreaterThan(msgOnly);
-    expect(replyOnly).toBeGreaterThan(reactionOnly);
+  it('weights replies > reactions > messages', () => {
+    const args = { reactions: 0, replies: 0, daysSinceLastActive: 0 };
+    const msg = computeScore({ ...args, messages: 1 });
+    const react = computeScore({ ...args, messages: 0, reactions: 1 });
+    const reply = computeScore({ ...args, messages: 0, replies: 1 });
+    expect(msg).toBe(1);
+    expect(react).toBe(2);
+    expect(reply).toBe(3);
   });
 
-  it('subtracts inactivity penalty', () => {
-    const score = computeScore({ messages: 10, reactions: 0, replies: 0, inactivityPenalty: 5 });
-    expect(score).toBe(5);
+  it('combines counters additively', () => {
+    expect(
+      computeScore({ messages: 10, reactions: 5, replies: 2, daysSinceLastActive: 0 }),
+    ).toBe(10 + 10 + 6);
+  });
+
+  it('subtracts inactivity penalty after grace', () => {
+    // 10 messages = 10pts; 14 days inactive = 7pt penalty
+    expect(
+      computeScore({ messages: 10, reactions: 0, replies: 0, daysSinceLastActive: 14 }),
+    ).toBe(3);
+  });
+
+  it('never goes below zero', () => {
+    expect(
+      computeScore({ messages: 1, reactions: 0, replies: 0, daysSinceLastActive: 365 }),
+    ).toBe(0);
+  });
+
+  it('inactivity within grace does not reduce score', () => {
+    expect(
+      computeScore({ messages: 5, reactions: 0, replies: 0, daysSinceLastActive: 5 }),
+    ).toBe(5);
   });
 });
