@@ -2,6 +2,33 @@
   "Home": {
     "badge": "Coming soon",
     "title": "TeleRep",
-    "subtitle": "Reputation layer for Telegram communities. Track activity, issue certificates, recognize top contributors."
+    "subtitle": "Reputation layer for Telegram communities. Track activity, issue certificates, recognize top contributors.",
+    "exploreCta": "View a sample community"
+  },
+  "Chat": {
+    "topMembers": "Top members",
+    "rank": "Rank",
+    "member": "Member",
+    "score": "Score",
+    "messages": "Messages",
+    "noActivity": "No activity yet — once members start chatting, the leaderboard appears here.",
+    "metaTitle": "{title} — leaderboard",
+    "metaDescription": "Top members of {title} on TeleRep.",
+    "notFoundTitle": "Community not found",
+    "notFoundBody": "This community doesn't exist on TeleRep yet."
+  },
+  "User": {
+    "communities": "Communities",
+    "totalScore": "Total score",
+    "rankIn": "Rank in {chat}",
+    "noCommunities": "Not active in any tracked community yet.",
+    "metaTitle": "{name} on TeleRep",
+    "metaDescription": "{name}'s reputation across Telegram communities.",
+    "notFoundTitle": "User not found",
+    "notFoundBody": "We have no record of this Telegram user."
+  },
+  "Common": {
+    "backHome": "← Home",
+    "viewProfile": "View profile"
   }
 }
