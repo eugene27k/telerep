@@ -1,9 +1,26 @@
 {
   "Home": {
-    "badge": "Coming soon",
-    "title": "TeleRep",
-    "subtitle": "Reputation layer for Telegram communities. Track activity, issue certificates, recognize top contributors.",
-    "exploreCta": "View a sample community"
+    "badge": "Public beta",
+    "title": "Reputation for your Telegram community",
+    "subtitle": "Add a bot, and we'll track who actually contributes — messages, replies, reactions — then build a public ranking and issue verifiable certificates to your top members.",
+    "addBotCta": "Add bot to a chat",
+    "exploreCta": "See a live example",
+    "howItWorksTitle": "How it works",
+    "step1Title": "Add the bot",
+    "step1Body": "Invite TeleRep to your group as an admin. It greets itself and begins tracking activity from that moment.",
+    "step2Title": "Activity is scored",
+    "step2Body": "Every message, reply, and reaction earns score. Inactive members lose points after a 7-day grace period. Only metadata is stored — never message text.",
+    "step3Title": "Recognize members",
+    "step3Body": "A public leaderboard appears at /c/your-chat. Issue PDF certificates to top contributors with one click from your dashboard.",
+    "featuredTitle": "Featured community",
+    "featuredMeta": "{members} members tracked · top score {topScore}",
+    "viewLeaderboard": "View leaderboard"
+  },
+  "Header": {
+    "signIn": "Sign in"
+  },
+  "Footer": {
+    "sourceLink": "Source on GitHub"
   },
   "Chat": {
     "topMembers": "Top members",
