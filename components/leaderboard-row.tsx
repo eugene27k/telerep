@@ -8,6 +8,8 @@ type Props = {
   avatarUrl: string | null;
   score: number;
   messageCount: number;
+  /** Optional trailing slot, e.g. an admin "Issue cert" button. */
+  actions?: React.ReactNode;
 };
 
 function initials(name: string): string {
@@ -27,6 +29,7 @@ export function LeaderboardRow({
   avatarUrl,
   score,
   messageCount,
+  actions,
 }: Props) {
   return (
     <div className="flex items-center gap-4 py-3 px-4 border-b last:border-b-0">
@@ -60,6 +63,7 @@ export function LeaderboardRow({
           {messageCount}
         </div>
       </div>
+      {actions ? <div className="ml-2">{actions}</div> : null}
     </div>
   );
 }

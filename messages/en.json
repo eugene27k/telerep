@@ -49,7 +49,23 @@
     "searchPlaceholder": "Search by name or @username…",
     "noMatches": "No members match your search.",
     "forbiddenTitle": "Not authorized",
-    "forbiddenBody": "You must be an administrator of this Telegram chat to view its dashboard."
+    "forbiddenBody": "You must be an administrator of this Telegram chat to view its dashboard.",
+    "issueCert": "Issue cert",
+    "issuingCert": "Issuing…"
+  },
+  "Verify": {
+    "verified": "Verified",
+    "title": "Certificate of Recognition",
+    "subtitle": "Issued by TeleRep based on tracked community activity.",
+    "recipient": "Recipient",
+    "community": "Community",
+    "rank": "Rank achieved",
+    "issued": "Issued on",
+    "issuedBy": "Issued by",
+    "downloadPdf": "Download PDF",
+    "metaTitle": "{name} — Rank in {community}",
+    "notFoundTitle": "Certificate not found",
+    "notFoundBody": "No certificate exists with this ID. It may have been revoked, or the link is mistyped."
   },
   "Common": {
     "backHome": "← Home",

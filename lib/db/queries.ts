@@ -203,3 +203,71 @@ export async function getAllMembers(chatId: string): Promise<MemberRow[]> {
     last_active_at: (row.last_active_at as string | null) ?? null,
   }));
 }
+
+export type Certificate = {
+  id: string;
+  user_id: string;
+  chat_id: string;
+  rank: number;
+  issued_at: string;
+  issued_by: string | null;
+};
+
+export type CertificateView = {
+  cert: Certificate;
+  user: User;
+  chat: Pick<Chat, 'id' | 'title' | 'slug'>;
+  issuedBy: Pick<User, 'id' | 'username' | 'display_name'> | null;
+};
+
+export async function getCertificate(id: string): Promise<CertificateView | null> {
+  const { data: cert, error } = await supabaseAdmin
+    .from('certificates')
+    .select('id, user_id, chat_id, rank, issued_at, issued_by')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) {
+    console.error('[queries] getCertificate:', error);
+    return null;
+  }
+  if (!cert) return null;
+
+  // Two separate joins are clearer than disambiguating the dual FK to users.
+  const [userRes, chatRes, issuerRes] = await Promise.all([
+    supabaseAdmin
+      .from('users')
+      .select('id, telegram_user_id, username, display_name, avatar_url')
+      .eq('id', cert.user_id as string)
+      .maybeSingle(),
+    supabaseAdmin
+      .from('chats')
+      .select('id, title, slug')
+      .eq('id', cert.chat_id as string)
+      .maybeSingle(),
+    cert.issued_by
+      ? supabaseAdmin
+          .from('users')
+          .select('id, username, display_name')
+          .eq('id', cert.issued_by as string)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  if (!userRes.data || !chatRes.data) return null;
+
+  return {
+    cert: {
+      id: cert.id as string,
+      user_id: cert.user_id as string,
+      chat_id: cert.chat_id as string,
+      rank: cert.rank as number,
+      issued_at: cert.issued_at as string,
+      issued_by: (cert.issued_by as string | null) ?? null,
+    },
+    user: userRes.data as unknown as User,
+    chat: chatRes.data as unknown as Pick<Chat, 'id' | 'title' | 'slug'>,
+    issuedBy:
+      (issuerRes.data as unknown as Pick<User, 'id' | 'username' | 'display_name'> | null) ??
+      null,
+  };
+}

@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { LeaderboardRow } from '@/components/leaderboard-row';
 import { ActivityChart } from '@/components/activity-chart';
 import { MemberSearchList } from '@/components/member-search-list';
+import { IssueCertButton } from '@/components/issue-cert-button';
 import {
   getChatBySlug,
   getChatMetrics,
@@ -140,6 +141,14 @@ export default async function DashboardPage({ params }: { params: Params }) {
                 avatarUrl={m.user.avatar_url}
                 score={m.score}
                 messageCount={m.message_count}
+                actions={
+                  <IssueCertButton
+                    chatSlug={chat.slug}
+                    userId={m.user.id}
+                    label={t('issueCert')}
+                    pendingLabel={t('issuingCert')}
+                  />
+                }
               />
             ))}
           </Card>

@@ -93,3 +93,23 @@ export async function insertEvent(args: {
   });
   if (error) console.error('[db] insertEvent failed:', error.message);
 }
+
+export async function issueCertificate(args: {
+  userId: string;
+  chatId: string;
+  rank: number;
+  issuedBy: string;
+}): Promise<string> {
+  const { data, error } = await supabaseAdmin
+    .from('certificates')
+    .insert({
+      user_id: args.userId,
+      chat_id: args.chatId,
+      rank: args.rank,
+      issued_by: args.issuedBy,
+    })
+    .select('id')
+    .single();
+  if (error) throw error;
+  return data.id as string;
+}
