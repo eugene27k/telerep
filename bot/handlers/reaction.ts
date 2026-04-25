@@ -9,6 +9,11 @@ export async function handleMessageReaction(ctx: Context): Promise<void> {
   if (!upd) return;
   const reactor = upd.user;
   const chat = upd.chat;
+
+  console.log(
+    `[bot] reaction received chat=${chat.id} from=@${reactor?.username ?? reactor?.id ?? '?'} delta=${upd.new_reaction.length - upd.old_reaction.length}`,
+  );
+
   if (!reactor || reactor.is_bot) return;
   if (chat.type !== 'group' && chat.type !== 'supergroup') return;
 
@@ -39,4 +44,5 @@ export async function handleMessageReaction(ctx: Context): Promise<void> {
       telegram_message_id: upd.message_id,
     },
   });
+  console.log(`[bot]   → reaction event credited`);
 }

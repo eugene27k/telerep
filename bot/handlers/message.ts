@@ -26,6 +26,10 @@ export async function handleMessage(ctx: Context): Promise<void> {
   const chat = ctx.chat;
   if (!msg || !from || !chat) return;
 
+  console.log(
+    `[bot] message received chat=${chat.id} (${chat.type}) from=@${from.username ?? from.id} text=${(msg.text ?? msg.caption ?? '').slice(0, 30)}`,
+  );
+
   if (from.is_bot) return;
   if (chat.type !== 'group' && chat.type !== 'supergroup') return;
   if (isServiceMessage(msg as unknown as Record<string, unknown>)) return;
@@ -43,6 +47,7 @@ export async function handleMessage(ctx: Context): Promise<void> {
       length: msg.text?.length ?? msg.caption?.length ?? 0,
     },
   });
+  console.log(`[bot]   → message event stored`);
 
   // Reply credit goes to the AUTHOR of the original message (not the replier).
   const replied = msg.reply_to_message;
@@ -57,5 +62,6 @@ export async function handleMessage(ctx: Context): Promise<void> {
         telegram_message_id: replied.message_id,
       },
     });
+    console.log(`[bot]   → reply event credited to @${replied.from.username ?? replied.from.id}`);
   }
 }
