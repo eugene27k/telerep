@@ -47,8 +47,15 @@ export async function upsertUser(tg: TgUser): Promise<string> {
   return data.id as string;
 }
 
-/** Inserts the chat if missing (slug stays stable). Returns chats.id. */
-export async function upsertChat(tg: TgChat): Promise<string> {
+/**
+ * Inserts the chat if missing (slug + added_by_user_id stay stable across calls).
+ * Pass addedByUserId only when you actually know who added the bot (membership event).
+ * Returns chats.id.
+ */
+export async function upsertChat(
+  tg: TgChat,
+  addedByUserId?: string,
+): Promise<string> {
   const { data: existing } = await supabaseAdmin
     .from('chats')
     .select('id')
@@ -62,6 +69,7 @@ export async function upsertChat(tg: TgChat): Promise<string> {
       telegram_chat_id: tg.id,
       title: tg.title,
       slug: makeSlug(tg.title, tg.id),
+      added_by_user_id: addedByUserId ?? null,
     })
     .select('id')
     .single();

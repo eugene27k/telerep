@@ -1,5 +1,5 @@
 import type { Context } from 'grammy';
-import { upsertChat } from '@/lib/db/operations';
+import { upsertChat, upsertUser } from '@/lib/db/operations';
 
 // Fires when the bot's own membership in a chat changes (added, removed, promoted).
 // Per PRD US-1: bot greets itself with one welcome message when added.
@@ -16,7 +16,12 @@ export async function handleMyChatMember(ctx: Context): Promise<void> {
   const isIn = newStatus === 'member' || newStatus === 'administrator';
 
   if (wasOut && isIn) {
-    await upsertChat({ id: chat.id, title: chat.title });
+    let addedByUserId: string | undefined;
+    const adder = upd.from;
+    if (adder && !adder.is_bot) {
+      addedByUserId = await upsertUser(adder);
+    }
+    await upsertChat({ id: chat.id, title: chat.title }, addedByUserId);
     try {
       await ctx.api.sendMessage(
         chat.id,

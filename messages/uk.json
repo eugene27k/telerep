@@ -27,6 +27,30 @@
     "notFoundTitle": "Користувача не знайдено",
     "notFoundBody": "У нас немає записів про цього користувача Telegram."
   },
+  "Login": {
+    "title": "Вхід",
+    "subtitle": "Увійдіть через Telegram, щоб керувати дашбордами своїх спільнот.",
+    "devOnly": "лише для розробки",
+    "devLoginCta": "Увійти (dev)",
+    "devLoginPlaceholder": "Telegram username (напр. eugene27k)",
+    "botUsernameMissing": "TELEGRAM_LOGIN_BOT_USERNAME не налаштовано."
+  },
+  "Dashboard": {
+    "badge": "Дашборд адміністратора",
+    "logout": "Вийти",
+    "viewPublic": "Публічна сторінка",
+    "totalMembers": "Учасників",
+    "activeIn7d": "Активних (7д)",
+    "activity30d": "Активність (останні 30 днів)",
+    "noActivity": "За останні 30 днів повідомлень не було.",
+    "top10": "Топ-10",
+    "noMembers": "Учасників ще немає.",
+    "allMembers": "Усі учасники",
+    "searchPlaceholder": "Пошук за іменем або @username…",
+    "noMatches": "Жоден учасник не відповідає запиту.",
+    "forbiddenTitle": "Доступ заборонено",
+    "forbiddenBody": "Щоб переглядати дашборд, потрібно бути адміністратором цього Telegram-чату."
+  },
   "Common": {
     "backHome": "← На головну",
     "viewProfile": "Переглянути профіль"

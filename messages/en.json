@@ -27,6 +27,30 @@
     "notFoundTitle": "User not found",
     "notFoundBody": "We have no record of this Telegram user."
   },
+  "Login": {
+    "title": "Sign in",
+    "subtitle": "Use Telegram to sign in and access community dashboards you administer.",
+    "devOnly": "dev only",
+    "devLoginCta": "Continue (dev)",
+    "devLoginPlaceholder": "Telegram username (e.g. eugene27k)",
+    "botUsernameMissing": "TELEGRAM_LOGIN_BOT_USERNAME is not configured."
+  },
+  "Dashboard": {
+    "badge": "Admin dashboard",
+    "logout": "Sign out",
+    "viewPublic": "Public page",
+    "totalMembers": "Total members",
+    "activeIn7d": "Active (7d)",
+    "activity30d": "Activity (last 30 days)",
+    "noActivity": "No messages yet in the last 30 days.",
+    "top10": "Top 10",
+    "noMembers": "No members tracked yet.",
+    "allMembers": "All members",
+    "searchPlaceholder": "Search by name or @username…",
+    "noMatches": "No members match your search.",
+    "forbiddenTitle": "Not authorized",
+    "forbiddenBody": "You must be an administrator of this Telegram chat to view its dashboard."
+  },
   "Common": {
     "backHome": "← Home",
     "viewProfile": "View profile"

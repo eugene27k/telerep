@@ -5,7 +5,24 @@ export type Chat = {
   telegram_chat_id: number;
   title: string;
   slug: string;
+  added_by_user_id: string | null;
   created_at: string;
+};
+
+export type ChatMetrics = {
+  totalMembers: number;
+  activeIn7d: number;
+};
+
+export type DailyCount = { day: string; count: number };
+
+export type MemberRow = {
+  user: User;
+  rank: number;
+  score: number;
+  message_count: number;
+  reaction_count: number;
+  last_active_at: string | null;
 };
 
 export type User = {
@@ -112,4 +129,77 @@ export async function getUserStandings(userId: string): Promise<UserChatStanding
     }),
   );
   return standings.sort((a, b) => b.score - a.score);
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+export async function getChatMetrics(chatId: string): Promise<ChatMetrics> {
+  const sevenDaysAgo = new Date(Date.now() - 7 * DAY_MS).toISOString();
+
+  const [{ count: total }, { data: recent }] = await Promise.all([
+    supabaseAdmin
+      .from('memberships')
+      .select('*', { count: 'exact', head: true })
+      .eq('chat_id', chatId)
+      .is('deleted_at', null),
+    supabaseAdmin
+      .from('events')
+      .select('user_id')
+      .eq('chat_id', chatId)
+      .gte('created_at', sevenDaysAgo),
+  ]);
+
+  const activeUsers = new Set((recent ?? []).map((r) => r.user_id as string));
+  return { totalMembers: total ?? 0, activeIn7d: activeUsers.size };
+}
+
+/** Daily message counts for the last `days` days (oldest → newest). */
+export async function getDailyMessageCounts(
+  chatId: string,
+  days = 30,
+): Promise<DailyCount[]> {
+  const since = new Date(Date.now() - days * DAY_MS).toISOString();
+  const { data } = await supabaseAdmin
+    .from('events')
+    .select('created_at')
+    .eq('chat_id', chatId)
+    .eq('type', 'message')
+    .gte('created_at', since);
+
+  const counts = new Map<string, number>();
+  for (const e of data ?? []) {
+    const day = (e.created_at as string).slice(0, 10);
+    counts.set(day, (counts.get(day) ?? 0) + 1);
+  }
+  const result: DailyCount[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(Date.now() - i * DAY_MS);
+    const day = d.toISOString().slice(0, 10);
+    result.push({ day, count: counts.get(day) ?? 0 });
+  }
+  return result;
+}
+
+/** All members of a chat for the searchable dashboard list (no pagination yet). */
+export async function getAllMembers(chatId: string): Promise<MemberRow[]> {
+  const { data, error } = await supabaseAdmin
+    .from('memberships')
+    .select(
+      'score, message_count, reaction_count, last_active_at, users(id, telegram_user_id, username, display_name, avatar_url)',
+    )
+    .eq('chat_id', chatId)
+    .is('deleted_at', null)
+    .order('score', { ascending: false });
+  if (error) {
+    console.error('[queries] getAllMembers:', error);
+    return [];
+  }
+  return (data ?? []).map((row, i) => ({
+    user: row.users as unknown as User,
+    rank: i + 1,
+    score: row.score as number,
+    message_count: row.message_count as number,
+    reaction_count: row.reaction_count as number,
+    last_active_at: (row.last_active_at as string | null) ?? null,
+  }));
 }
